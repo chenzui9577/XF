@@ -1,0 +1,9 @@
+<service>
+     <id>xf-server</id>
+     <name>xf-server</name>
+     <description>xf-server start!!!</description>
+     <env name="JAVA_HOME" value="%JAVA_HOME%"/>
+     <executable>java</executable>
+     <arguments>-jar "D:\XF\Server\xf-server.jar"</arguments><!--jar存放路径-->
+     <startmode>Automatic</startmode>
+ </service>

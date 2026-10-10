@@ -1,0 +1,45 @@
+server:
+  port: 8080
+
+spring:
+  thymeleaf:
+    check-template: false
+    check-template-location: false
+  jpa:
+    open-in-view: false
+  application:
+    name: jgdf-template
+    version: v1.0-beta
+  datasource:
+    name: systemManager
+    #本地测试：
+    url: jdbc:mysql://localhost:3306/YOUR_DATABASE
+    username: YOUR_USERNAME
+    password: CHANGE_ME
+
+    #Linux服务器：
+    #url: jdbc:mysql://localhost:3306/YOUR_DATABASE
+    #username: YOUR_USERNAME
+    #password: CHANGE_ME
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+
+# mybatis 配置内容
+mybatis:
+  config-location: classpath:mybatis-config.xml  # 配置 MyBatis 配置文件路径
+  mapper-locations: classpath:mapper/*.xml  # 配置 Mapper XML 地址
+  type-aliases-package: org.example.entity # 配置数据库实体包路径
+  logging:
+    level:
+      cn.piesat: debug
+    file: Spring.log
+
+#logging:
+  #config: classpath:log4j2.xml

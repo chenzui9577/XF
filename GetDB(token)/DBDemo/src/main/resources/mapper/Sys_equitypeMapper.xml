@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.Sys_equitypeMapper">
+
+    <resultMap id="sys_etMap" type="org.example.entity.Sys_equitype">
+        <id property="Id" column="Id" />
+        <result property="Code" column="Code"/>
+        <result property="Name_eqt" column="Name_eqt"/>
+        <result property="Systype" column="Systype" />
+        <result property="Bus" column="Bus"/>
+        <result property="Notes" column="Notes"/>
+    </resultMap>
+
+    <sql id="FIELDS">
+        Id, Code,Name_eqt, Systype,Bus,Notes
+    </sql>
+    <select id="queryByName_eqt" parameterType="String" resultMap="sys_etMap">
+        SELECT Systype
+        FROM sys_equitype
+        WHERE Name_eqt = #{Name_eqt}
+        LIMIT 1
+    </select>
+    <delete id="deleteSys_equitype" parameterType="int">
+        delete from sys_equitype where Id=#{Id}
+    </delete>
+
+    <update id="updateSys_equitype" parameterType="org.example.entity.Sys_equitype">
+        update sys_equitype
+        set Code=#{code},
+            Name_eqt=#{Name_eqt},
+            Systype=#{Systype},
+            bus=#{bus},
+            Notes=#{Notes}
+        where Id=#{Id};
+    </update>
+
+    <insert id="addSys_equitype" parameterType="org.example.entity.Sys_equitype" >
+        insert into sys_equitype (Id,Name_eqt,Code,Systype,bus,Notes)
+        values (#{Id},#{Name_eqt},#{Code},#{Systype},#{bus},#{Notes})
+    </insert>
+    <delete id="deleteBatchByIds">
+        DELETE FROM sys_equitype WHERE id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="queryByid" resultType="org.example.entity.Sys_equitype" parameterType="int">
+        select * from sys_equitype
+        where Id=#{Id}
+    </select>
+    <select id="selectAll" resultMap="sys_etMap">
+        SELECT
+        <include refid="FIELDS" />
+        FROM sys_equitype
+    </select>
+    <select id="queryAllSystype" resultMap="sys_etMap">
+        SELECT DISTINCT Systype FROM sys_equitype
+    </select>
+</mapper>

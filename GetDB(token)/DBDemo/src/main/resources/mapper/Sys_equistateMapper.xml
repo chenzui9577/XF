@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.Sys_equistateMapper">
+
+    <resultMap id="sys_esMap" type="org.example.entity.Sys_equistate">
+        <id property="Id" column="Id" />
+        <result property="Typecode" column="Typecode"/>
+        <result property="code" column="code"/>
+        <result property="Retcode" column="Retcode" />
+        <result property="States" column="States"/>
+        <result property="Retstate" column="Retstate"/>
+        <result property="Statename" column="Statename"/>
+    </resultMap>
+
+    <select id="queryByTypecode" parameterType="String" resultMap="sys_esMap">
+        SELECT States
+        FROM sys_equistate
+        WHERE Typecode = #{Typecode}
+        AND Retstate = #{Retstate}
+        LIMIT 1
+    </select>
+    <sql id="FIELDS">
+        Id, Typecode, code, Retcode,States,Retstate,Statename
+    </sql>
+    <select id="selectAll" resultMap="sys_esMap">
+        SELECT
+        <include refid="FIELDS" />
+        FROM sys_equistate
+    </select>
+    <delete id="deleteSys_equistate" parameterType="int">
+        delete from sys_equistate where id=#{id}
+    </delete>
+
+    <update id="updateSys_equistate" parameterType="org.example.entity.Sys_equistate">
+        update sys_equistate
+        set Typecode =#{Typecode},
+            code=#{code},
+            Retcode=#{Retcode},
+            States=#{States},
+            Retstate=#{Retstate},
+            Statename=#{Statename}
+        where id=#{id};
+    </update>
+
+    <insert id="addSys_equistate" parameterType="org.example.entity.Sys_equistate" >
+        insert into sys_equistate (id,Typecode,code,Retcode,States, Retstate,Statename)
+        values (#{id},#{Typecode},#{code},#{Retcode},#{States},#{Retstate},#{Statename})
+    </insert>
+
+    <select id="queryByid" resultType="org.example.entity.Sys_equistate" parameterType="int">
+        select * from sys_equistate
+        where id=#{id}
+    </select>
+
+    <delete id="deleteBatchByIds">
+        DELETE FROM sys_equistate WHERE id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

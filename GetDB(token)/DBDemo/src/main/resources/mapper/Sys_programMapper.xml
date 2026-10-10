@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.Sys_programMapper">
+
+    <resultMap id="sys_spgMap" type="org.example.entity.Sys_program">
+        <id property="Id" column="Id" />
+        <result property="Unitname" column="Unitname" />
+        <result property="Engicode" column="Engicode"/>
+        <result property="Enginame" column="Enginame"/>
+        <result property="Address" column="Address"/>
+        <result property="Protypename" column="Protypename"/>
+        <result property="Client" column="Client"/>
+    </resultMap>
+    <!--根据Id进行的各种数据操作-->
+    <sql id="FIELDS">
+        Id, Enginame, Engicode, Address,Unitname,Protypename,Client
+    </sql>
+    <delete id="deleteSys_program" parameterType="int">
+        delete from sys_program where Id=#{Id}
+    </delete>
+    <select id="queryByEnginame" resultType="org.example.entity.Sys_program" parameterType="String">
+        SELECT Engicode,Enginame
+        FROM sys_program
+        WHERE Enginame like concat ('%',#{Enginame},'%')
+    </select>
+    <select id="selectAllEnginame" resultMap="sys_spgMap">
+        SELECT Engicode,Enginame
+        FROM sys_program
+    </select>
+    <select id="queryAllClient" resultMap="sys_spgMap">
+        select id,Client from sys_program
+    </select>
+    <select id="queryByClient" resultMap="sys_spgMap" parameterType="String">
+        SELECT Enginame
+        FROM sys_program
+        WHERE Client = #{Client}
+    </select>
+    <update id="updateSys_program" parameterType="org.example.entity.Sys_program">
+        update sys_program
+        set Engicode=#{Engicode},
+            Enginame=#{Enginame},
+            Address=#{Address},
+            Unitname=#{Unitname},
+            Protypename=#{Protypename},
+            Client=#{Client}
+        where Id=#{Id};
+    </update>
+    <select id="queryByid" resultType="org.example.entity.Sys_program" parameterType="int">
+        select * from sys_program
+        where id=#{id}
+    </select>
+    <insert id="addSys_program" parameterType="org.example.entity.Sys_program" >
+        insert into sys_program (Id,Enginame, Engicode, Address,Unitname,Protypename,Client)
+        values (#{Id},#{Enginame},#{Engicode},#{Address},#{Unitname},#{Protypename},#{Client})
+    </insert>
+    <select id="selectAll" resultMap="sys_spgMap">
+        SELECT
+        <include refid="FIELDS" />
+        FROM sys_program
+    </select>
+    <delete id="deleteBatchByIds">
+        DELETE FROM sys_program WHERE id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

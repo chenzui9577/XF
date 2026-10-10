@@ -1,0 +1,72 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 15672
+    username: YOUR_USERNAME
+    password: CHANGE_ME
+    virtual-host: /
+    publisher-confirms: true #支持生产者发布消息确认
+    #publisher-confirm-type: correlated
+    publisher-returns: true  #支持生产者发布消息返回
+    listener: #消费者的配置设置
+      simple: #SimpleRabbitListenerContainerFactory，默认监听工厂
+        acknowledge-mode: manual   #采用手动应答
+        concurrency: 10            #指定最小的消费者数量
+        max-concurrency: 20        #指定最大的消费者数量
+  shardingsphere:
+    props:
+      sql-show: false
+    datasource:
+      names: master,slave0,slave1 # 真实数据源名称，多个数据源用逗号区分
+      common:
+        jdbc-url: jdbc:mysql://localhost:3306/YOUR_DATABASE
+        username: YOUR_USERNAME
+        password: CHANGE_ME
+        type: com.zaxxer.hikari.HikariDataSource # 数据库连接池全类名
+        driver-class-name: com.mysql.jdbc.Driver # 数据库驱动类名，以数据库连接池自身配置为准
+      master:
+        jdbc-url: jdbc:mysql://localhost:3306/YOUR_DATABASE
+        username: YOUR_USERNAME
+        password: CHANGE_ME
+        type: com.zaxxer.hikari.HikariDataSource # 数据库连接池全类名
+        driver-class-name: com.mysql.jdbc.Driver # 数据库驱动类名，以数据库连接池自身配置为准
+      slave0:
+        jdbc-url: jdbc:mysql://localhost:3306/YOUR_DATABASE
+        username: YOUR_USERNAME
+        password: CHANGE_ME
+        type: com.zaxxer.hikari.HikariDataSource # 数据库连接池全类名
+        driver-class-name: com.mysql.jdbc.Driver # 数据库驱动类名，以数据库连接池自身配置为准
+      slave1:
+        jdbc-url: jdbc:mysql://localhost:3306/YOUR_DATABASE
+        username: YOUR_USERNAME
+        password: CHANGE_ME
+        type: com.zaxxer.hikari.HikariDataSource # 数据库连接池全类名
+        driver-class-name: com.mysql.jdbc.Driver # 数据库驱动类名，以数据库连接池自身配置为准
+    rules:
+      #读写分离
+      replica-query:
+        data-sources:
+          ds:
+            primary-data-source-name: master # 主数据源名称
+            replica-data-source-names: slave0,slave1 # 从数据源名称，多个从数据源用逗号分隔
+            load-balancer-name: average # 负载均衡算法名称，随意起名，但需要与下面配置对应
+        load-balancers:
+          average: #与上面算法名称对应
+            type: ROUND_ROBIN # 负载均衡算法类型，ROUND_ROBIN：轮询算法，RANDOM：随机访问算法
+            props:
+              workId: 1  # 负载均衡算法属性配置
+
+#mybatis配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**Mapper.xml
+  global-config:
+    id-type: 0  #0:数据库ID自增   1:用户输入id  2:全局唯一id(IdWorker)  3:全局唯一ID(uuid)
+    db-column-underline: false
+    refresh-mapper: true
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true #配置的缓存的全局开关
+    lazyLoadingEnabled: true #延时加载的开关
+    multipleResultSetsEnabled: true #开启的话，延时加载一个属性时会加载该对象全部属性，否则按需加载属性
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用
+    #log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl  #生产环境关闭日志输出

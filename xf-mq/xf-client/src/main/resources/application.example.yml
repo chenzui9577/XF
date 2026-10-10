@@ -1,0 +1,22 @@
+server:
+  servlet:
+    context-path: /CollectorManage
+  port: 8995
+
+spring:
+  application:
+    name: xf-client
+  rabbitmq:
+    host: localhost
+    port: 15672
+    username: YOUR_USERNAME
+    password: CHANGE_ME
+    virtual-host: /
+    publisher-confirms: true #支持生产者发布消息确认
+    #publisher-confirm-type: correlated
+    publisher-returns: true  #支持生产者发布消息返回
+    listener: #消费者的配置设置
+      simple: #SimpleRabbitListenerContainerFactory，默认监听工厂
+        acknowledge-mode: manual   #采用手动应答
+        concurrency: 10            #指定最小的消费者数量
+        max-concurrency: 20        #指定最大的消费者数量

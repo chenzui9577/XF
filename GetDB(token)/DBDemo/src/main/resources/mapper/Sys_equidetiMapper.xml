@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.Sys_equidetiMapper">
+
+    <resultMap id="sys_eqdMap" type="org.example.entity.Sys_equideti">
+        <id property="Id" column="Id"/>
+        <result property="Engicode" column="Engicode"/>
+        <result property="Number" column="Number"/>
+        <result property="Name" column="Name"/>
+        <result property="Addr" column="Addr"/>
+        <result property="Usercode" column="Usercode"/>
+        <result property="Loops" column="Loops"/>
+        <result property="Eaddr" column="Eaddr"/>
+        <result property="tray" column="tray"/>
+        <result property="handkey" column="handkey"/>
+        <association property="sys_equitype" javaType="org.example.entity.Sys_equitype" >
+            <result column="Name_eqt" property="Name_eqt"/>
+            <result column="Systype" property="Name_eqt"/>
+            <result column="Notes" property="Name_eqt"/>
+        </association>
+    </resultMap>
+    <sql id="FIELDS">
+        Id , Engicode,  Name, Addr, Usercode,Number, Loops, Eaddr,tray,handkey
+    </sql>
+    <select id="selectByEngicode" parameterType="String" resultMap="sys_eqdMap">
+        SELECT
+            Engicode, Name, Addr, Usercode,Number, Loops, Eaddr,tray,handkey
+        FROM sys_equideti
+        WHERE Engicode = #{Engicode}
+    </select>
+    <delete id="deleteSys_equideti" parameterType="int">
+        delete
+        from sys_equideti
+        where Id = #{Id}
+    </delete>
+
+    <update id="updateSys_equideti" parameterType="org.example.entity.Sys_equideti">
+        update sys_equideti
+        set Engicode=#{Engicode},
+            Name=#{Name},
+            Addr=#{Addr},
+            Usercode=#{Usercode},
+            Number=#{Number},
+            Loops=#{Loops},
+            Eaddr=#{Eaddr},
+            tray=#{tray},
+            handkey=#{handkey}
+        where Id = #{Id};
+    </update>
+    <!-- 保存比对结果 -->
+    <insert id="savePartComparisonResult" parameterType="org.example.entity.PartComparisonResult">
+        INSERT INTO partcomparisonresult (model_point_count, database_point_count, only_model_points, only_database_points)
+        VALUES (#{modelPointCount}, #{databasePointCount}, #{onlyModelPoints}, #{onlyDatabasePoints})
+    </insert>
+    <insert id="addSys_equideti" parameterType="org.example.entity.Sys_equideti">
+        insert into sys_equideti (Id, Engicode, Name, Addr, Usercode, Number, Loops, Eaddr,tray,handkey)
+        values (#{Id}, #{Engicode}, #{Name}, #{Addr}, #{Usercode}, #{Number}, #{Loops}, #{Eaddr},#{tray},#{handkey})
+    </insert>
+    <insert id="addexcel" parameterType="org.example.entity.Sys_equideti">
+        insert into sys_equideti (Engicode, Name, Addr, Usercode, Number, Loops, Eaddr ,tray , handkey)
+        values (#{Engicode}, #{Name}, #{Addr}, #{Usercode}, #{Number}, #{Loops}, #{Eaddr},#{tray},#{handkey})
+    </insert>
+    <select id="queryByid" resultMap="sys_eqdMap">
+        SELECT DISTINCT eqd.*,eqt.Name_eqt
+        FROM sys_equideti eqd
+        LEFT JOIN sys_equitype eqt
+            ON CONCAT(eqt.Notes, '')
+                   like CONCAT('%,',eqd.`Name`,',%')
+                   or CONCAT(eqt.Notes, '') like CONCAT('',eqd.`Name`,',%')
+                   or CONCAT(eqt.Notes, '') like CONCAT('%,',eqd.`Name`,'')
+        WHERE eqd.Id= #{Id}
+    </select>
+    <select id="selectAll" resultMap="sys_eqdMap">
+        SELECT
+        <include refid="FIELDS"/>
+        FROM sys_equideti
+    </select>
+
+    <select id="getUsercodeByEngicode" resultType="java.lang.String">
+        SELECT usercode FROM Sys_equideti WHERE Engicode = #{Engicode}
+    </select>
+    <select id="getUsercodeByEngicode1" resultType="java.lang.String">
+        SELECT usercode FROM Sys_equideti WHERE Engicode = #{Engicode}
+    </select>
+    <select id="findByUsercode" resultType="org.example.entity.Sys_equideti">
+        SELECT * FROM sys_equideti WHERE Usercode = #{Usercode}
+    </select>
+    <delete id="deleteBatchByIds">
+        DELETE FROM sys_equideti WHERE id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteByEngicode" parameterType="String">
+        DELETE FROM sys_equideti WHERE Engicode = #{Engicode}
+    </delete>
+    <insert id="saveOrUpdate" parameterType="org.example.entity.Sys_equideti">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            SELECT IFNULL((SELECT id FROM sys_equideti WHERE Usercode = #{Usercode}), 0)
+        </selectKey>
+        <choose>
+            <when test="id != 0">
+                UPDATE sys_equideti
+                SET Engicode = #{Engicode},
+                Name = #{Name},
+                addr = #{addr},
+                number = #{number},
+                loops = #{loops},
+                eaddr = #{eaddr},
+                tray = #{tray},
+                handkey = #{handkey}
+                WHERE id = #{id}
+            </when>
+            <otherwise>
+                INSERT INTO sys_equideti (engicode, name, addr, usercode, number, loops, eaddr, tray, handkey)
+                VALUES (#{engicode}, #{name}, #{addr}, #{usercode}, #{number}, #{loops}, #{eaddr}, #{tray}, #{handkey})
+            </otherwise>
+        </choose>
+    </insert>
+</mapper>

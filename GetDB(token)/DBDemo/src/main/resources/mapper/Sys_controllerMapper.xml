@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.Sys_controllerMapper">
+
+    <resultMap id="sys_conMap" type="org.example.entity.Sys_controller">
+        <id property="id" column="Id" />
+        <result property="Engicode" column="Engicode"/>
+        <result property="Enginame" column="Enginame"/>
+        <result property="Typename" column="Typename" />
+        <result property="Typecode" column="Typecode"/>
+        <result property="Ccode" column="Ccode"/>
+        <result property="Notes" column="Notes"/>
+    </resultMap>
+
+
+    <!--根据Id进行的各种数据操作-->
+    <sql id="FIELDS">
+        Id, Engicode, Enginame, Typename,Typecode, Ccode, Notes
+    </sql>
+    <delete id="deleteSys_controller" parameterType="int">
+        delete from sys_controller where id=#{Id}
+    </delete>
+
+    <update id="updateSys_controller" parameterType="org.example.entity.Sys_controller">
+        update sys_controller
+        set Enginame =#{Enginame},
+            Engicode=#{Engicode},
+            Typecode=#{Typecode},
+            Typename=#{Typename},
+            Ccode=#{Ccode},
+            Notes=#{Notes}
+        where id=#{id};
+    </update>
+
+    <insert id="addSys_controller" parameterType="org.example.entity.Sys_controller">
+        insert into sys_controller (id, Enginame,Engicode, Typecode,Typename, Ccode, Notes)
+        values (#{id},#{Enginame},#{Engicode},#{Typecode},#{Typename},#{Ccode},#{Notes})
+    </insert>
+
+    <select id="queryByid" parameterType="int" resultType="org.example.entity.Sys_controller">
+        select * from sys_controller
+        where id= #{id}
+    </select>
+    <select id="selectByEnginame" parameterType="String" resultMap="sys_conMap">
+        SELECT
+        <include refid="FIELDS" />
+        FROM sys_controller
+        WHERE Enginame = #{Enginame}
+        LIMIT 1
+    </select>
+    <!-- 搜索全部-->
+    <select id="selectAll" resultMap="sys_conMap">
+        SELECT
+        <include refid="FIELDS" />
+        FROM sys_controller
+    </select>
+    <select id="selectEngicodeAndEnginame" resultMap="sys_conMap">
+        select Engicode,Enginame FROM sys_controller
+    </select>
+
+    <!--根据控制器返回码，查询控制器代码（项目代码）-->
+    <select id="queryByCcode" parameterType="String" resultMap="sys_conMap">
+        SELECT Engicode
+        FROM sys_controller
+        WHERE Ccode = #{Ccode}
+    </select>
+    <delete id="deleteBatchByIds">
+        DELETE FROM sys_controller WHERE id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

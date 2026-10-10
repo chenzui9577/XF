@@ -1,0 +1,23 @@
+# Local configuration (sanitized examples are tracked)
+**/application.yml
+.env
+.env.*
+!.env.example
+
+# Build output and packaged applications
+**/target/
+**/out/
+*.class
+*.jar
+*.jar.original
+*.war
+*.exe
+
+# Runtime logs and IDE state
+**/logs/
+*.log
+*.log.*
+**/.idea/
+*.iml
+Thumbs.db
+.DS_Store

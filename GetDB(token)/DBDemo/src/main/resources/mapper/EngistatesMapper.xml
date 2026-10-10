@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.EngistatesMapper">
+
+    <resultMap id="sys_EngMap" type="org.example.entity.Engistates">
+        <id property="Id" column="Id" />
+        <result property="Unitname" column="Unitname" />
+        <result property="Engicode" column="Engicode"/>
+        <result property="Enginame" column="Enginame"/>
+        <result property="Equiname" column="Equiname"/>
+        <result property="Addr" column="Addr"/>
+        <result property="Statename" column="Statename"/>
+        <result property="Usercode" column="Usercode"/>
+        <result property="Number" column="Number"/>
+        <result property="Loops" column="Loops" />
+        <result property="Eaddr" column="Eaddr"/>
+        <result property="Dt" column="Dt"/>
+    </resultMap>
+    <!--根据Id进行的各种数据操作-->
+    <sql id="FIELDS">
+        Id, Engicode, Enginame, Usercode,Dt,Eaddr,Addr,Unitname,Equiname,Loops,Statename,Number
+    </sql>
+    <!-- 搜索全部-->
+    <select id="selectAll" resultMap="sys_EngMap">
+        SELECT
+        <include refid="FIELDS" />
+        FROM engistates Where Engicode ='37XF210000439' order by Id desc
+    </select>
+    <select id="selectByEngicode" parameterType="String" resultMap="sys_EngMap">
+        SELECT
+        <include refid="FIELDS" />
+        FROM engistates
+        WHERE Engicode = #{Engicode}
+    </select>
+    <select id="selectByUsercode" parameterType="String" resultMap="sys_EngMap">
+        SELECT
+        <include refid="FIELDS" />
+        FROM engistates
+        WHERE Usercode = #{Usercode}
+        /*WHERE Usercode LIKE CONCAT('%', #{Usercode}, '%')*/
+        ORDER BY id DESC
+    </select>
+    <select id="findByUserCodeWithLimit" resultType="org.example.entity.Engistates">
+        SELECT * FROM engistates
+        <where>
+            (Engicode = '37XF210000439' OR Engicode = '' OR Engicode IS NULL)
+            <if test="code != null and code != ''">
+                And Usercode LIKE CONCAT('%', #{code}, '%')
+            </if>
+        </where>
+        ORDER BY id desc
+        <choose>
+            <when test="count != null">
+                LIMIT #{count}
+            </when>
+            <otherwise>
+                LIMIT 200
+            </otherwise>
+        </choose>
+    </select>
+    <select id="selectByUsercodeAndCount" parameterType="map" resultMap="sys_EngMap">
+        SELECT
+        <include refid="FIELDS"/>
+        FROM engistates
+        Where Usercode LIKE CONCAT('%', #{Usercode}, '%') AND Engicode = '37XF210000439'
+        ORDER BY id DESC
+        LIMIT 0,#{count}
+    </select>
+    <delete id="deleteBatchByIds">
+        DELETE FROM engistates WHERE id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

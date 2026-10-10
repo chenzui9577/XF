@@ -1,0 +1,1 @@
+import{s as t}from"./index-61f7ebad.js";function o(){return t({url:"/Controller/selectAll",method:"get"})}function l(e){return t({url:"/Controller/add",method:"get",params:e})}function n(e){return t({url:"/Controller/update",method:"get",params:e})}function u(e){return t({url:"/Controller/delete",method:"get",params:e})}export{l as a,u as d,o as g,n as u};

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.Sys_stateMapper">
+
+    <resultMap id="sys_stMap" type="org.example.entity.Sys_state">
+        <id property="id" column="id" />
+        <result property="States" column="States"/>
+        <result property="Statename" column="Statename"/>
+        <result property="Notes" column="Notes" />
+    </resultMap>
+
+    <sql id="FIELDS">
+        id ,States, Statename, Notes
+    </sql>
+
+    <select id="queryByStates" parameterType="String" resultMap="sys_stMap">
+        SELECT Statename
+        FROM sys_state
+        WHERE States = #{States}
+        LIMIT 1
+    </select>
+    <delete id="deleteSys_state" parameterType="int">
+        delete from sys_state where id=#{id}
+    </delete>
+
+    <update id="updateSys_state" parameterType="org.example.entity.Sys_state">
+        update sys_state
+        set States=#{States},
+            Statename=#{Statename},
+            Notes=#{Notes}
+        where id=#{id};
+    </update>
+
+    <insert id="addSys_state" parameterType="org.example.entity.Sys_state" >
+        insert into sys_state (id,States,Statename, Notes)
+        values (#{id},#{States},#{Statename},#{Notes})
+    </insert>
+
+    <select id="queryByid" resultType="org.example.entity.Sys_state" parameterType="int">
+        select * from sys_state
+        where id=#{id}
+    </select>
+    <select id="selectAll" resultMap="sys_stMap">
+        SELECT
+        <include refid="FIELDS" />
+        FROM sys_state order by States
+    </select>
+    <delete id="deleteBatchByIds">
+        DELETE FROM sys_state WHERE id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

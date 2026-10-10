@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.PartComparisonResultMapper">
+
+    <resultMap id="pcrMap" type="org.example.entity.PartComparisonResult">
+        <id property="id" column="id"/>
+        <result property="model_point_count" column="model_point_count"/>
+        <result property="database_point_count" column="database_point_count"/>
+        <result property="only_model_points" column="only_model_points"/>
+        <result property="only_database_points" column="only_database_points"/>
+    </resultMap>
+ <!-- 获取比对结果 -->
+    <select id="getLatestComparisonResult" resultType="org.example.entity.PartComparisonResult">
+        SELECT * FROM partcomparisonresult ORDER BY id DESC LIMIT 1;
+    </select>
+
+</mapper>

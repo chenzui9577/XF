@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.Sys_searchMapper">
+    <resultMap id="sys_sscMap" type="org.example.entity.Sys_equideti">
+        <id property="Id" column="Id" />
+        <result property="Engicode" column="Engicode"/>
+        <result property="Name" column="Name" />
+        <result property="Addr" column="Addr" />
+        <result property="Usercode" column="Usercode" />
+        <result property="Loops" column="Loops" />
+        <result property="Eaddr" column="Eaddr"/>
+        <result property="number" column='number'/>
+        <result property="tray" column="tray"/>
+        <result property="handkey" column='handkey'/>
+        <association property="sys_equitype" javaType="org.example.entity.Sys_equitype" >
+        <result column="Name_eqt" property="Name_eqt"/>
+        <result column="Systype" property="Systype" />
+        <result column="Notes" property="Notes"/>
+</association>
+</resultMap>
+    <sql id="FIELDS">
+        Id, Engicode, Typecode_bak, Equicode, Name, Addr, Usercode, Loops, Eaddr,number,tray,handkey
+    </sql>
+    <!--查找该项目包含的所有系统类型-->
+    <select id="queryAllSystype" resultMap="sys_sscMap" parameterType="String">
+        SELECT  DISTINCT  eqt.Systype
+        FROM sys_equideti eqd
+                 LEFT JOIN sys_equitype eqt ON  CONCAT(eqt.Notes, '') like CONCAT('%,',eqd.`Name`,',%')
+
+    </select>
+    <!--查看该项目中某个系统类型包含的所有部件类型-->
+    <select id="queryAllName_eqt" resultMap="sys_sscMap" parameterType="String">
+        SELECT DISTINCT eqt.`Name_eqt` FROM sys_equideti eqd
+                Left JOIN sys_equitype eqt ON  eqt.Systype = #{Systype} WHERE CONCAT(eqt.Notes, '') like CONCAT('%,',eqd.`Name`,',%')
+    </select>
+
+    <select id="queryBySelection" resultMap="sys_sscMap">
+        SELECT DISTINCT eqd.*, eqt.`Name_eqt`
+        FROM sys_equideti eqd
+        LEFT JOIN sys_equitype eqt ON
+        <choose>
+            <when test="Systype != null and Systype != '' and (Name_eqt == null or Name_eqt == '')">
+                eqt.Systype = #{Systype}
+            </when>
+            <when test="Systype != null and Systype != '' and Name_eqt != null and Name_eqt != ''">
+                eqt.Systype = #{Systype} AND eqt.Name_eqt = #{Name_eqt}
+            </when>
+            <otherwise>
+                1=1
+            </otherwise>
+        </choose>
+        WHERE CONCAT(eqt.Notes, '') LIKE CONCAT('%,',eqd.`Name`,',%')
+
+    </select>
+
+
+    <!--查看该项目中某个系统类型中的部件信息-->
+   <!-- <select id="queryAllBySystype" resultMap="sys_sscMap">
+        SELECT DISTINCT eqd.*, eqt.`Name_eqt` FROM sys_equideti eqd
+                                                       LEFT JOIN sys_equitype eqt
+                                                                 ON eqt.Systype = IF(#{Systype} IS NULL OR #{Systype} = '', eqt.Systype, #{Systype})
+        WHERE IF(#{Systype} IS NULL OR #{Systype} = '',
+                 CONCAT(eqt.Notes, '') LIKE CONCAT('%,', eqd.`Name`, ',%'))
+    </select>-->
+    <select id="queryAllBySystype" resultMap="sys_sscMap">
+        SELECT DISTINCT eqd.*,eqt.`Name_eqt` FROM sys_equideti eqd
+        LEFT JOIN sys_equitype eqt ON  eqt.Systype = #{Systype}
+        WHERE CONCAT(eqt.Notes, '') like CONCAT('%,',eqd.`Name`,',%')
+    </select>
+    <!--查看该项目中某个部件类型中的部件信息-->
+    <select id="queryAllByName_eqt" resultMap="sys_sscMap">
+        SELECT DISTINCT eqd.*,eqt.`Name_eqt` FROM sys_equideti eqd
+        LEFT JOIN sys_equitype eqt ON  eqt.Name_eqt = #{Name_eqt}
+        WHERE CONCAT(eqt.Notes, '') like CONCAT('%,',eqd.`Name`,',%')
+    </select>
+    <select id="queryAll" resultMap="sys_sscMap" parameterType="String">
+        SELECT DISTINCT eqd.*,eqt.`Name_eqt` FROM sys_equideti eqd
+            LEFT JOIN sys_equitype eqt ON CONCAT(eqt.Notes, '') like CONCAT('%,',eqd.`Name`,',%')
+    </select>
+
+
+
+    <!--<select id="queryAllByTypecode_bak" parameterType="String" resultMap="sys_sscMap">
+        SELECT
+            Id, Engicode, Typecode_bak, Equicode, Name, Addr, Usercode, Loops, Eaddr
+        FROM sys_equideti
+        WHERE Typecode_bak = #{Typecode_bak}
+        LIMIT 1
+    </select>
+    <select id="queryByTypecode_bak" parameterType="String" resultMap="sys_sscMap">
+        SELECT DISTINCT Name FROM sys_equideti WHERE Typecode_bak = #{Typecode_bak}
+    </select>
+
+    <select id="queryByName"  parameterType="String" resultMap="sys_sscMap">
+        SELECT
+        <include refid="FIELDS" />
+        FROM sys_equideti
+        WHERE Name = #{Name}
+    </select>
+-->
+</mapper>

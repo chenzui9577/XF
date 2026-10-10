@@ -1,0 +1,9 @@
+<service>
+     <id>DBDemo</id>
+     <name>DBDemo</name>
+     <description>DBDemo start!!!</description>
+     <env name="JAVA_HOME" value="%JAVA_HOME%"/>
+     <executable>java</executable>
+     <arguments>-jar "D:\XF\DBdemo\DBDemo.jar"</arguments><!--jar存放路径-->
+     <startmode>Automatic</startmode>
+ </service>
